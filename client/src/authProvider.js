@@ -1,29 +1,35 @@
-export default {
-    // called when the user attempts to log in
-    login: ({ username }) => {
-        localStorage.setItem('username', username);
-        // accept all username/password combinations
+import { AUTH_LOGIN, AUTH_ERROR, AUTH_LOGOUT } from 'react-admin';
+
+export default (type, params) => {
+    if (type === AUTH_LOGIN) {
+        const { username, password } = params;
+        const request = new Request('http://localhost:4000/api/signIn', {
+            method: 'POST',
+            body: JSON.stringify({ username, password }),
+            headers: new Headers({ 'Content-Type': 'application/json' }),
+        })
+        return fetch(request)
+            .then(response => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error(response.statusText);
+                }
+                return response.json();
+            })
+            .then(({ token }) => {
+                localStorage.setItem('auth-token', token);
+            });
+    }
+    if (type === AUTH_LOGOUT) {
+        localStorage.removeItem('auth-token');
         return Promise.resolve();
-    },
-    // called when the user clicks on the logout button
-    logout: () => {
-        localStorage.removeItem('username');
-        return Promise.resolve();
-    },
-    // called when the API returns an error
-    checkError: ({ status }) => {
+    }
+    if (type === AUTH_ERROR) {
+        const status  = params.status;
         if (status === 401 || status === 403) {
-            localStorage.removeItem('username');
+            localStorage.removeItem('auth-token');
             return Promise.reject();
         }
         return Promise.resolve();
-    },
-    // called when the user navigates to a new location, to check for authentication
-    checkAuth: () => {
-        return localStorage.getItem('username')
-            ? Promise.resolve()
-            : Promise.reject();
-    },
-    // called when the user navigates to a new location, to check for permissions / roles
-    getPermissions: () => Promise.resolve(),
-};
+    }
+    return Promise.resolve();
+}

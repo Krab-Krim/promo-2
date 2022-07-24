@@ -3,7 +3,6 @@ import authProvider from './authProvider';
 import PostIcon from '@mui/icons-material/Book';
 import UserIcon from '@mui/icons-material/Group';
 import {Admin, Resource} from 'react-admin';
-import jsonServerProvider from 'ra-data-json-server';
 import {UserList} from './components/user/UserList';
 import Dashboard from './tables/Dashboard';
 import PostEdit from "./components/post/PostEdit";
@@ -12,12 +11,14 @@ import PostShow from "./components/post/PostShow";
 import PostList from "./components/post/PostList";
 import UserEdit from "./components/user/UserEdit";
 import UserCreate from "./components/user/UserCreate";
+import myDataProvider from "./myDataProvider";
+import {fetchJson as httpClient} from './httpClient'
+
+const dataProvider = myDataProvider('http://localhost:3000', httpClient);
 
 const App = () => (
     <Admin
-        dataProvider={jsonServerProvider(
-            "http://localhost:3000"
-        )}
+        dataProvider={dataProvider}
         authProvider={authProvider}
         dashboard={Dashboard}
     >
