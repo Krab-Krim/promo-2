@@ -1,5 +1,5 @@
 import * as React from 'react';
-import authProvider from './authProvider';
+import authProvider from './authProvider/authProvider';
 import PostIcon from '@mui/icons-material/Book';
 import UserIcon from '@mui/icons-material/Group';
 import {Admin, Resource} from 'react-admin';
@@ -11,8 +11,8 @@ import PostShow from "./components/post/PostShow";
 import PostList from "./components/post/PostList";
 import UserEdit from "./components/user/UserEdit";
 import UserCreate from "./components/user/UserCreate";
-import myDataProvider from "./myDataProvider";
-import {fetchJson as httpClient} from './httpClient'
+import myDataProvider from "./dataProvider/myDataProvider";
+import {fetchJson as httpClient} from './httpClient/httpClient'
 
 const dataProvider = myDataProvider('http://localhost:3000', httpClient);
 
